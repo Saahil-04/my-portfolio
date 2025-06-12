@@ -181,7 +181,7 @@ const HeroSection = () => {
                 backgroundSize: '300% 300%'
               }}
             >
-              Hi, I'm Alex Johnson
+              Hi, I'm Saahil Vishwakarma
             </motion.h1>
             
             <motion.h2 
@@ -190,7 +190,7 @@ const HeroSection = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Senior Full Stack Developer
+              Full Stack Developer
             </motion.h2>
             
             <motion.p 
