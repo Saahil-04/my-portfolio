@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Head from 'next/head';
 import Navbar from './components/sections/navbar';
 import HeroSection from './components/sections/herosection';
 import AboutSection from './components/sections/aboutsection';
@@ -11,9 +10,9 @@ import SkillsSection from './components/sections/skillssection';
 import ContactSection from './components/sections/contactsection';
 import Footer from './components/sections/footer';
 
-export default function Portfolio() { 
+export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['hero', 'about', 'projects', 'journey', 'skills', 'contact'];
@@ -40,11 +39,8 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white overflow-x-hidden">
-      <Head>
-        <title>My Portfolio | Senior Developer</title>
-        <meta name="description" content="Professional portfolio showcasing my skills and projects" />
-      </Head>
+    <div className="min-h-screen bg-gradient-to-b from-black/60 via-black/30 to-transparent">
+
       <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
       <HeroSection />
       <AboutSection />

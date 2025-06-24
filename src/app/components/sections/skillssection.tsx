@@ -49,7 +49,7 @@ const SkillsSection = () => {
     }
   ];
   return (
-    <section id="skills" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900">
+    <section id="skills" className="py-20 ">
      <div className="container mx-auto px-6">
         <motion.div 
           className="text-center mb-16"

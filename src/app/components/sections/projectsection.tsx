@@ -1,39 +1,43 @@
 import { motion } from 'framer-motion';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import Image from 'next/image';
 
 const ProjectsSection = () => {
-  // ...existing projects array and JSX...
-   const projects = [
+
+  const projects = [
     {
       id: 1,
-      title: 'E-commerce Platform',
-      description: 'A full-featured online shopping platform with payment integration and admin dashboard.',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      github: 'https://github.com',
-      live: 'https://example.com',
+      title: 'SaranshAI - AI Summarizer',
+      description: 'Collaborated on a full-featured summarizer for text,url,images and pdfs.',
+      technologies: ['Reactjs', 'Nestjs', 'Python', 'PostgreSQL', 'Prisma ORM', 'MAterial UI'],
+      src: '/SaranshAI.png',
+      github: 'https://github.com/Saahil-04/Saransh-AI',
+      live: 'https://github.com/Saahil-04/Saransh-AI',
     },
     {
       id: 2,
-      title: 'Task Management App',
-      description: 'A collaborative task management application with real-time updates.',
-      technologies: ['Next.js', 'Firebase', 'Tailwind CSS'],
-      github: 'https://github.com',
-      live: 'https://example.com',
+      title: 'Royal Rolling Shutter',
+      description: 'A collaborative Portfolio website for a Shutter Shop.',
+      technologies: ['Reactjs', 'Material UI', 'EmailJS', 'SEO'],
+      src: '/RoyalRollingShutters.png',
+      github: 'https://github.com/Nayum-khan/RoyalRollingShutter',
+      live: 'https://www.royalrollingshutter.com/',
     },
     {
       id: 3,
-      title: 'Social Media Dashboard',
-      description: 'Analytics dashboard for social media managers with data visualization.',
-      technologies: ['React', 'D3.js', 'Express', 'PostgreSQL'],
-      github: 'https://github.com',
-      live: 'https://example.com',
+      title: 'Movie Recommendor',
+      description: 'Movie Recommendation System based on certain mood filters.',
+      technologies: ['React', 'Material UI', 'Python', 'TMDB API'],
+      src: '/MovieRecommendor.png',
+      github: 'https://github.com/Saahil-04/Movie-Recommendor',
+      live: 'https://github.com/Saahil-04/Movie-Recommendor',
     },
   ];
 
   return (
-    <section id="projects" className="py-20 bg-gradient-to-b from-gray-900 to-gray-950">
+    <section id="projects" className="py-20">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,7 +62,18 @@ const ProjectsSection = () => {
               whileHover={{ y: -10 }}
             >
               <div className="h-48 bg-gradient-to-br from-cyan-700/30 to-blue-700/30 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent">
+                  <Image
+                    src={project.src}
+                    alt="Project Picture"
+                    // fill 
+                    width={400}
+                    height={400}
+                    priority // for above-the-fold
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+
+                </div>
                 <div className="absolute top-4 right-4 flex space-x-2">
                   <a href={project.github} className="bg-gray-900/80 p-2 rounded-full hover:bg-cyan-700 transition-colors">
                     <FiGithub />

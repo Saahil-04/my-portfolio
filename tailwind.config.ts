@@ -1,4 +1,7 @@
-module.exports = {
+
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
@@ -8,7 +11,8 @@ module.exports = {
         'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-slower': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-medium': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'spin-slow': 'spin 20s linear infinite',
+        'spin-slow': 'spin 8s linear infinite',
+        'spin-slower': 'spin 12s linear infinite',
       },
       keyframes: {
         pulse: {
@@ -20,3 +24,5 @@ module.exports = {
   },
   plugins: [],
 }
+
+export default config

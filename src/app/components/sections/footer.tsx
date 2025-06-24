@@ -1,7 +1,12 @@
 import { FiGithub, FiLinkedin, FiTwitter, FiMail } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
 
 const Footer = () => {
-    const currentYear = new Date().getFullYear();
+    const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+    useEffect(() => {
+        setCurrentYear(new Date().getFullYear());
+    }, []);
     return (
         <footer className="py-10 border-t border-gray-800">
             <div className="container mx-auto px-6">
