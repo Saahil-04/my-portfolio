@@ -1,39 +1,113 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiSend } from 'react-icons/fi';
+import emailjs from '@emailjs/browser';
+
+
+const socialLinks = [
+    {
+        href: 'https://github.com/Saahil-04',
+        icon: <FiGithub size={24} />,
+        label: 'GitHub',
+    },
+    {
+        href: 'https://www.linkedin.com/in/saahil-vishwakarma-7a5943288/',
+        icon: <FiLinkedin size={24} />,
+        label: 'LinkedIn',
+    },
+    {
+        href: 'https://x.com/SaahilV_04',
+        icon: <FiTwitter size={24} />,
+        label: 'Twitter',
+    },
+];
+
+const inputBase =
+    'w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500';
+
+// EmailJS Configuration - Replace with your actual values
+const EMAILJS_CONFIG = {
+    SERVICE_ID: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID ?? '',
+    TEMPLATE_ID: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? '',
+    PUBLIC_KEY: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY ?? '',
+};
 
 const ContactSection = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: ''
-    });
-
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
+    const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({ ...prev, [name]: value }));
+        },
+        []
+    );
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+    const handleSubmit = useCallback(
+        async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            setIsSubmitting(true);
+            setSubmitMessage('');
+            setSubmitStatus('');
 
-        // Simulate form submission
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setSubmitMessage('Your message has been sent successfully!');
-            setFormData({ name: '', email: '', message: '' });
+            try {
+                // Send email using EmailJS
+                const result = await emailjs.send(
+                    EMAILJS_CONFIG.SERVICE_ID,
+                    EMAILJS_CONFIG.TEMPLATE_ID,
+                    {
+                        name: formData.name,
+                        email: formData.email,
+                        message: formData.message,
+                    },
+                    EMAILJS_CONFIG.PUBLIC_KEY
+                );
 
-            // Clear success message after 5 seconds
-            setTimeout(() => {
-                setSubmitMessage('');
-            }, 5000);
-        }, 1500);
-    };
+                console.log('Email sent successfully:', result);
+
+                setSubmitStatus('success');
+                setSubmitMessage('Your message has been sent successfully! I\'ll get back to you soon.');
+                setFormData({ name: '', email: '', message: '' });
+
+            } catch (error) {
+                console.error('Failed to send email:', error);
+                setSubmitStatus('error');
+                setSubmitMessage('Failed to send message. Please try again or contact me directly.');
+            } finally {
+                setIsSubmitting(false);
+
+                // Clear message after 5 seconds
+                setTimeout(() => {
+                    setSubmitMessage('');
+                    setSubmitStatus('');
+                }, 5000);
+            }
+        },
+        [formData]
+    );
+
+    const socialIcons = useMemo(
+        () =>
+            socialLinks.map(link => (
+                <motion.a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-gray-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors"
+                    whileHover={{ y: -5 }}
+                    aria-label={link.label}
+                >
+                    {link.icon}
+                </motion.a>
+            )),
+        []
+    );
+
     return (
         <section id="contact" className="py-20">
             <div className="container mx-auto px-6">
@@ -45,7 +119,10 @@ const ContactSection = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                        Get In <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Touch</span>
+                        Get In{' '}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+                            Touch
+                        </span>
                     </h2>
                     <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 mx-auto"></div>
                 </motion.div>
@@ -60,7 +137,6 @@ const ContactSection = () => {
                     >
                         <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                             <h3 className="text-xl font-bold mb-6">Contact Information</h3>
-
                             <div className="space-y-6">
                                 <div className="flex items-start">
                                     <div className="text-cyan-400 mt-1 mr-4">
@@ -68,12 +144,14 @@ const ContactSection = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-medium mb-1">Email</h4>
-                                        <a href="mailto:contact@example.com" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                                            contact@example.com
+                                        <a
+                                            href="mailto:digital.saahilsvishwakarma@gmail.com"
+                                            className="text-gray-400 hover:text-cyan-400 transition-colors break-all"
+                                        >
+                                            digital.saahilsvishwakarma@gmail.com
                                         </a>
                                     </div>
                                 </div>
-
                                 <div className="flex items-start">
                                     <div className="text-cyan-400 mt-1 mr-4">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,42 +161,13 @@ const ContactSection = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-medium mb-1">Location</h4>
-                                        <p className="text-gray-400">San Francisco, CA</p>
+                                        <p className="text-gray-400">Nerul, Navi Mumbai, Maharashtra</p>
                                     </div>
                                 </div>
                             </div>
-
                             <div className="mt-8">
                                 <h4 className="font-medium mb-4">Follow Me</h4>
-                                <div className="flex space-x-4">
-                                    <motion.a
-                                        href="https://github.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="bg-gray-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors"
-                                        whileHover={{ y: -5 }}
-                                    >
-                                        <FiGithub size={24} />
-                                    </motion.a>
-                                    <motion.a
-                                        href="https://linkedin.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="bg-gray-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors"
-                                        whileHover={{ y: -5 }}
-                                    >
-                                        <FiLinkedin size={24} />
-                                    </motion.a>
-                                    <motion.a
-                                        href="https://twitter.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="bg-gray-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors"
-                                        whileHover={{ y: -5 }}
-                                    >
-                                        <FiTwitter size={24} />
-                                    </motion.a>
-                                </div>
+                                <div className="flex space-x-4">{socialIcons}</div>
                             </div>
                         </div>
                     </motion.div>
@@ -132,17 +181,23 @@ const ContactSection = () => {
                     >
                         <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                             <h3 className="text-xl font-bold mb-6">Send Me a Message</h3>
-
                             {submitMessage && (
-                                <div className="mb-6 p-4 bg-green-900/30 text-green-400 rounded-lg">
+                                <div
+                                    className={`mb-6 p-4 rounded-lg ${submitStatus === 'success'
+                                            ? 'bg-green-900/30 text-green-400'
+                                            : 'bg-red-900/30 text-red-400'
+                                        }`}
+                                    aria-live="polite"
+                                >
                                     {submitMessage}
                                 </div>
                             )}
-
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit} autoComplete="off">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
-                                        <label htmlFor="name" className="block text-gray-300 mb-2">Your Name</label>
+                                        <label htmlFor="name" className="block text-gray-300 mb-2">
+                                            Your Name
+                                        </label>
                                         <input
                                             type="text"
                                             id="name"
@@ -150,11 +205,14 @@ const ContactSection = () => {
                                             value={formData.name}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                            className={inputBase}
+                                            autoComplete="name"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="email" className="block text-gray-300 mb-2">Your Email</label>
+                                        <label htmlFor="email" className="block text-gray-300 mb-2">
+                                            Your Email
+                                        </label>
                                         <input
                                             type="email"
                                             id="email"
@@ -162,13 +220,15 @@ const ContactSection = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                            className={inputBase}
+                                            autoComplete="email"
                                         />
                                     </div>
                                 </div>
-
                                 <div className="mb-6">
-                                    <label htmlFor="message" className="block text-gray-300 mb-2">Message</label>
+                                    <label htmlFor="message" className="block text-gray-300 mb-2">
+                                        Message
+                                    </label>
                                     <textarea
                                         id="message"
                                         name="message"
@@ -176,10 +236,9 @@ const ContactSection = () => {
                                         value={formData.message}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                        className={inputBase}
                                     ></textarea>
                                 </div>
-
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}

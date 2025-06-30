@@ -16,7 +16,7 @@ const SocialIcon = ({ icon, url }: SocialIconProps) => (
     href={url} 
     target="_blank" 
     rel="noopener noreferrer"
-    className="p-2 rounded-full bg-gray-800 hover:bg-cyan-700 transition-colors"
+    className="blobity-magnetic p-2 rounded-full bg-gray-800 hover:bg-cyan-700 transition-colors"
     whileHover={{ scale: 1.2, rotate: 10 }}
     whileTap={{ scale: 0.9 }}
   >

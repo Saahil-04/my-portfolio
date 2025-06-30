@@ -2,19 +2,21 @@ import { motion } from 'framer-motion';
 import Image from 'next/image'
 import FadeInUp from '../ui/fadeInUp';
 import { useReducedMotion } from 'framer-motion'
-
+import { useRef } from 'react';
+import Typewriter from 'typewriter-effect';
 
 const HeroSection = () => {
+  const typedText = "Hi, I'm Saahil Vishwakarma";
   const shouldReduceMotion = useReducedMotion()
   return (
     <section id="hero" className="min-h-screen flex items-center relative pt-16">
-
       <div className="container mx-auto px-6 py-24 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <motion.div
             className="md:w-1/2 mb-16 md:mb-0"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
           >
             <motion.h1
@@ -40,21 +42,34 @@ const HeroSection = () => {
                 backgroundSize: '300% 300%'
               }}
             >
-              Hi, I'm Saahil Vishwakarma
+              <Typewriter
+                options={{
+                  strings: ["Hi, I'm Saahil Vishwakarma", "Welcome to My Portfolio!"],
+                  autoStart: true,
+                  loop: false,
+                  delay: 60,
+                  deleteSpeed: 20,
+                }}
+                onInit={(typewriter) => {
+                  typewriter
+                    .typeString(typedText)
+                    .start();
+                }}
+              />
             </motion.h1>
 
-            <FadeInUp
-               delay={shouldReduceMotion ? 0 : 0.5}
-            >
+            <FadeInUp delay={shouldReduceMotion ? 0 : 0.5}>
               <h2 className="text-2xl md:text-4xl font-bold mb-6">Full Stack Developer</h2>
             </FadeInUp>
 
-            <FadeInUp  delay={shouldReduceMotion ? 0 : 0.5}>
-              <p className="text-lg text-gray-300 mb-8 max-w-lg">I build exceptional digital experiences that are fast, accessible,
-                visually appealing, and responsive. Let's create something amazing together.</p>
+            <FadeInUp delay={shouldReduceMotion ? 0 : 0.5}>
+              <p className="text-lg text-gray-300 mb-8 max-w-lg">
+                I build exceptional digital experiences that are fast, accessible,
+                visually appealing, and responsive. Let's create something amazing together.
+              </p>
             </FadeInUp>
 
-            <FadeInUp  delay={shouldReduceMotion ? 0 : 0.9}>
+            <FadeInUp delay={shouldReduceMotion ? 0 : 0.9}>
               <div className="flex space-x-4">
                 <motion.a
                   href="#contact"
@@ -76,27 +91,36 @@ const HeroSection = () => {
             </FadeInUp>
           </motion.div>
 
+          {/* Profile image with simple static border */}
           <motion.div
             className="md:w-1/2 flex justify-center"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 2.0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.2 }}
           >
-            <div className="relative">
-              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white/10 relative">
+            <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-transparent shadow-lg z-10">
                 <Image
                   src="/profile_pic.jpg"
-                  alt="me"
-                  // fill 
+                  alt="Portrait of Saahil Vishwakarma"
                   width={400}
                   height={400}
-                  priority // for above-the-fold
+                  priority
                   className="rounded-xl"
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
-
               </div>
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-400 border-r-blue-500 animate-spin-slow"></div>
-              <div className="absolute -inset-4 rounded-full border-4 border-transparent border-b-cyan-400 border-l-blue-500 animate-spin-slower"></div>
+              <motion.div
+                className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-400 border-r-blue-500"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+              />
+              <motion.div
+                className="absolute -inset-4 rounded-full border-4 border-transparent border-b-cyan-400 border-l-blue-500"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+              />
             </div>
           </motion.div>
         </div>
@@ -106,6 +130,7 @@ const HeroSection = () => {
         className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ delay: 1.5, duration: 0.5 }}
       >
         <a href="#about" className="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
@@ -120,7 +145,7 @@ const HeroSection = () => {
           </motion.div>
         </a>
       </motion.div>
-    </section >
+    </section>
   );
 };
 

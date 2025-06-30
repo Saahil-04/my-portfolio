@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AnimatedBg from "./components/ui/animatedBg";
-import AnimatedCursor from "react-animated-cursor";
+// import AnimatedCursor from "react-animated-cursor";
 import { Inter } from 'next/font/google';
+import BlobityCursor from "./components/ui/blobityCursor";
 const inter = Inter({ subsets: ['latin'] });
 
 
@@ -26,7 +27,8 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} relative text-white overflow-x-hidden cursor-none`}>
         <AnimatedBg />
-        <AnimatedCursor
+        <BlobityCursor />
+        {/* <AnimatedCursor
           innerSize={8}
           outerSize={35}
           color='255, 255, 255'
@@ -36,7 +38,7 @@ export default function RootLayout({
           clickables={[
             'a', 'button', '.link', 'input', 'textarea', 'select', 'label'
           ]}
-        />
+        /> */}
         <main className="relative z-10">{children}</main>
       </body>
     </html>
