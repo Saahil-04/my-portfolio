@@ -3,7 +3,7 @@ import FadeInUp from '../ui/fadeInUp';
 const AboutSection = () => {
   return (
     <section id="about" className="py-20">
-      <div className="container mx-auto px-6">
+      <div className="container max-w-full mx-auto px-6">
         <FadeInUp>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -31,23 +31,19 @@ const AboutSection = () => {
             </FadeInUp>
             <FadeInUp delay={0.5}>
               <p className="text-gray-300 mb-4">
-                With over 7 years of experience in web development, I specialize in building modern, 
-                responsive, and user-friendly web applications. My journey in tech began when I was 
+                I’m a curious builder at heart, someone who loves turning ideas into sleek, functional web experiences. My journey in tech began when I was
                 just a teenager, and I've been passionate about creating digital experiences ever since.
               </p>
             </FadeInUp>
             <FadeInUp delay={0.6}>
               <p className="text-gray-300 mb-4">
-                I hold a Bachelor's degree in Computer Science and have worked with various companies 
-                ranging from startups to large enterprises. My expertise spans across the entire stack, 
-                but I have a particular fondness for frontend development and creating visually 
-                stunning interfaces.
+                I hold a Bachelor's degree in Computer Applications and can work comfortably across the stack—but I light up most when crafting front-end experiences that feel intuitive and smooth. I’m the kind of dev who enjoys the little wins—debugging a tricky bug, polishing a button animation, or watching clean data flow through a well-structured API.
               </p>
             </FadeInUp>
             <FadeInUp delay={0.7}>
               <p className="text-gray-300 mb-6">
-                When I'm not coding, you can find me hiking in the mountains, reading sci-fi novels, 
-                or contributing to open-source projects. I believe in lifelong learning and constantly 
+                When I'm not coding, you can find me playing my fav sport, drawing sketches and doodles,
+                or usually exploring new tools. I believe in lifelong learning and constantly
                 strive to expand my skill set.
               </p>
             </FadeInUp>

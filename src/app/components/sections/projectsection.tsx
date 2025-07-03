@@ -380,7 +380,7 @@ const ProjectsSection = () => {
   return (
     <section 
       id="projects" 
-      className="py-12 sm:py-16 lg:py-20 relative overflow-hidden min-h-screen" 
+      className="py-12 sm:py-16 lg:py-20 max-w-full relative overflow-hidden min-h-screen" 
       aria-label="Projects showcase"
       ref={sectionRef}
     >
@@ -431,7 +431,7 @@ const ProjectsSection = () => {
         {/* Projects carousel */}
         <div
           ref={containerRef}
-          className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar"
+          className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar w-full max-w-full"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}

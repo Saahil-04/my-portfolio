@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { FaReact, FaNodeJs, FaDatabase, FaTools } from 'react-icons/fa';
 
 const SkillsSection = () => {
-   const skills = [
+  const skills = [
     {
       category: 'Frontend',
       icon: <FaReact className="text-cyan-400" />,
@@ -50,8 +50,8 @@ const SkillsSection = () => {
   ];
   return (
     <section id="skills" className="py-20 ">
-     <div className="container mx-auto px-6">
-        <motion.div 
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6">
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -61,36 +61,36 @@ const SkillsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             My <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Skills</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 mx-auto"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 mx-auto rounded-full"></div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {skills.map((skillGroup, index) => (
             <motion.div
               key={index}
-              className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+              className="bg-white/10 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/20 p-8 flex flex-col"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <div className="flex items-center mb-6">
-                <div className="text-3xl mr-3">
+                <div className="text-3xl mr-3 drop-shadow-lg">
                   {skillGroup.icon}
                 </div>
-                <h3 className="text-xl font-bold">{skillGroup.category}</h3>
+                <h3 className="text-xl font-bold text-white/90">{skillGroup.category}</h3>
               </div>
-              
-              <div className="space-y-4">
+
+              <div className="space-y-5">
                 {skillGroup.items.map((skill, idx) => (
                   <div key={idx}>
                     <div className="flex justify-between mb-1">
-                      <span className="text-gray-300">{skill.name}</span>
-                      <span className="text-cyan-400">{skill.level}%</span>
+                      <span className="text-gray-200 font-medium">{skill.name}</span>
+                      <span className="text-cyan-400 font-semibold">{skill.level}%</span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <motion.div 
-                        className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                    <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        className="h-2 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-lg"
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
                         viewport={{ once: true }}

@@ -39,7 +39,7 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black/60 via-black/30 to-transparent">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-black/60 via-black/30 to-transparent">
 
       <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
       <HeroSection />

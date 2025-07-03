@@ -1,32 +1,22 @@
 'use client';
-import { useState, useCallback, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiSend } from 'react-icons/fi';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiMail, FiSend } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
-
-
-const socialLinks = [
-    {
-        href: 'https://github.com/Saahil-04',
-        icon: <FiGithub size={24} />,
-        label: 'GitHub',
-    },
-    {
-        href: 'https://www.linkedin.com/in/saahil-vishwakarma-7a5943288/',
-        icon: <FiLinkedin size={24} />,
-        label: 'LinkedIn',
-    },
-    {
-        href: 'https://x.com/SaahilV_04',
-        icon: <FiTwitter size={24} />,
-        label: 'Twitter',
-    },
-];
+import SocialLinks from '../ui/socialLinks';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const inputBase =
     'w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500';
 
-// EmailJS Configuration - Replace with your actual values
+const schema = z.object({
+    name: z.string().min(2, "Name is required"),
+    email: z.string().email("Enter a valid email"),
+    message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
 const EMAILJS_CONFIG = {
     SERVICE_ID: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID ?? '',
     TEMPLATE_ID: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? '',
@@ -34,83 +24,45 @@ const EMAILJS_CONFIG = {
 };
 
 const ContactSection = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
     const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('');
 
-    const handleChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            const { name, value } = e.target;
-            setFormData(prev => ({ ...prev, [name]: value }));
-        },
-        []
-    );
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting }
+    } = useForm({
+        resolver: zodResolver(schema),
+    });
 
-    const handleSubmit = useCallback(
-        async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            setIsSubmitting(true);
-            setSubmitMessage('');
-            setSubmitStatus('');
-
-            try {
-                // Send email using EmailJS
-                const result = await emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID,
-                    {
-                        name: formData.name,
-                        email: formData.email,
-                        message: formData.message,
-                    },
-                    EMAILJS_CONFIG.PUBLIC_KEY
-                );
-
-                console.log('Email sent successfully:', result);
-
-                setSubmitStatus('success');
-                setSubmitMessage('Your message has been sent successfully! I\'ll get back to you soon.');
-                setFormData({ name: '', email: '', message: '' });
-
-            } catch (error) {
-                console.error('Failed to send email:', error);
-                setSubmitStatus('error');
-                setSubmitMessage('Failed to send message. Please try again or contact me directly.');
-            } finally {
-                setIsSubmitting(false);
-
-                // Clear message after 5 seconds
-                setTimeout(() => {
-                    setSubmitMessage('');
-                    setSubmitStatus('');
-                }, 5000);
-            }
-        },
-        [formData]
-    );
-
-    const socialIcons = useMemo(
-        () =>
-            socialLinks.map(link => (
-                <motion.a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors"
-                    whileHover={{ y: -5 }}
-                    aria-label={link.label}
-                >
-                    {link.icon}
-                </motion.a>
-            )),
-        []
-    );
+    const onSubmit = async (data: { name: string; email: string; message: string }) => {
+        setSubmitMessage('');
+        setSubmitStatus('');
+        try {
+            await emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                data,
+                EMAILJS_CONFIG.PUBLIC_KEY
+            );
+            setSubmitStatus('success');
+            setSubmitMessage("Your message has been sent successfully! I'll get back to you soon.");
+            reset();
+        } catch (error) {
+            setSubmitStatus('error');
+            setSubmitMessage('Failed to send message. Please try again or contact me directly.');
+        } finally {
+            setTimeout(() => {
+                setSubmitMessage('');
+                setSubmitStatus('');
+            }, 5000);
+        }
+    };
 
     return (
         <section id="contact" className="py-20">
-            <div className="container mx-auto px-6">
+            <div className="container max-w-full mx-auto px-6">
                 <motion.div
                     className="text-center mb-16"
                     initial={{ opacity: 0, y: 30 }}
@@ -167,13 +119,14 @@ const ContactSection = () => {
                             </div>
                             <div className="mt-8">
                                 <h4 className="font-medium mb-4">Follow Me</h4>
-                                <div className="flex space-x-4">{socialIcons}</div>
+                                <SocialLinks variant="contact" only={['GitHub', 'LinkedIn', 'Twitter']} iconSize={24} />
                             </div>
                         </div>
                     </motion.div>
 
                     <motion.div
                         className="lg:w-2/3"
+                
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
@@ -181,63 +134,76 @@ const ContactSection = () => {
                     >
                         <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                             <h3 className="text-xl font-bold mb-6">Send Me a Message</h3>
-                            {submitMessage && (
-                                <div
-                                    className={`mb-6 p-4 rounded-lg ${submitStatus === 'success'
-                                            ? 'bg-green-900/30 text-green-400'
-                                            : 'bg-red-900/30 text-red-400'
-                                        }`}
-                                    aria-live="polite"
-                                >
-                                    {submitMessage}
-                                </div>
-                            )}
-                            <form onSubmit={handleSubmit} autoComplete="off">
+                           
+                            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
                                         <label htmlFor="name" className="block text-gray-300 mb-2">
                                             Your Name
                                         </label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                            className={inputBase}
-                                            autoComplete="name"
-                                        />
+                                        <motion.div
+                                            animate={errors.name ? { x: [0, -8, 8, -8, 8, 0] } : { x: 0 }}
+                                            transition={{ duration: 0.4 }}
+                                        >
+                                            <input
+                                                id="name"
+                                                {...register("name")}
+                                                className={`${inputBase} transition-colors duration-200 ${errors.name
+                                                    ? 'border-red-500 focus:ring-red-500'
+                                                    : 'focus:border-cyan-500 focus:ring-cyan-500'
+                                                    }`}
+                                                autoComplete="name"
+                                            />
+                                            {errors.name && (
+                                                <span className="text-red-400 text-sm">{errors.name.message}</span>
+                                            )}
+                                        </motion.div>
                                     </div>
                                     <div>
                                         <label htmlFor="email" className="block text-gray-300 mb-2">
                                             Your Email
                                         </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            required
-                                            className={inputBase}
-                                            autoComplete="email"
-                                        />
+                                        <motion.div
+                                            animate={errors.email ? { x: [0, -8, 8, -8, 8, 0] } : { x: 0 }}
+                                            transition={{ duration: 0.4 }}
+                                        >
+                                            <input
+                                                id="email"
+                                                type="email"
+                                                {...register("email")}
+                                                className={`${inputBase} transition-colors duration-200 ${errors.email
+                                                    ? 'border-red-500 focus:ring-red-500'
+                                                    : 'focus:border-cyan-500 focus:ring-cyan-500'
+                                                    }`}
+                                                autoComplete="email"
+                                            />
+                                            {errors.email && (
+                                                <span className="text-red-400 text-sm">{errors.email.message}</span>
+                                            )}
+                                        </motion.div>
                                     </div>
                                 </div>
                                 <div className="mb-6">
                                     <label htmlFor="message" className="block text-gray-300 mb-2">
                                         Message
                                     </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        rows={5}
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        required
-                                        className={inputBase}
-                                    ></textarea>
+                                    <motion.div
+                                        animate={errors.message ? { x: [0, -8, 8, -8, 8, 0] } : { x: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <textarea
+                                            id="message"
+                                            rows={5}
+                                            {...register("message")}
+                                            className={`${inputBase} transition-colors duration-200 ${errors.message
+                                                ? 'border-red-500 focus:ring-red-500'
+                                                : 'focus:border-cyan-500 focus:ring-cyan-500'
+                                                }`}
+                                        ></textarea>
+                                        {errors.message && (
+                                            <span className="text-red-400 text-sm">{errors.message.message}</span>
+                                        )}
+                                    </motion.div>
                                 </div>
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
@@ -254,6 +220,51 @@ const ContactSection = () => {
                                         </>
                                     )}
                                 </motion.button>
+                                 <AnimatePresence>
+                                {submitMessage && (
+                                    <motion.div
+                                        key={submitStatus}
+                                        layout
+                                        className={`mt-5 mb-5 p-4 rounded-lg flex flex-col items-center ${submitStatus === 'success'
+                                            ? 'bg-green-900/30 text-green-400'
+                                            : 'bg-red-900/30 text-red-400'
+                                            }`}
+                                        aria-live="polite"
+                                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                    >
+                                        {submitStatus === 'success' && (
+                                            <motion.div
+                                                className="flex justify-center mb-2"
+                                                initial={{ scale: 0.7, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                            >
+                                                <svg
+                                                    className="w-14 h-14 text-green-400"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth={3}
+                                                    viewBox="0 0 48 48"
+                                                >
+                                                    <motion.path
+                                                        d="M12 24l8 8 16-16"
+                                                        stroke="currentColor"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        initial={{ pathLength: 0 }}
+                                                        animate={{ pathLength: 1 }}
+                                                        transition={{ duration: 0.7, ease: "easeInOut" }}
+                                                    />
+                                                </svg>
+                                            </motion.div>
+                                        )}
+                                        {submitMessage}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                             </form>
                         </div>
                     </motion.div>

@@ -10,7 +10,7 @@ const HeroSection = () => {
   const shouldReduceMotion = useReducedMotion()
   return (
     <section id="hero" className="min-h-screen flex items-center relative pt-16">
-      <div className="container mx-auto px-6 py-24 relative z-10">
+      <div className="container mx-auto px-6 py-24 relative z-10 max-w-full">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <motion.div
             className="md:w-1/2 mb-16 md:mb-0"
@@ -117,9 +117,9 @@ const HeroSection = () => {
                 transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
               />
               <motion.div
-                className="absolute -inset-4 rounded-full border-4 border-transparent border-b-cyan-400 border-l-blue-500"
+                className="absolute -inset-4 rounded-full border-6 border-transparent border-b-cyan-400 border-l-blue-500"
                 animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+                transition={{ repeat: Infinity, duration: 10, ease: "anticipate" }}
               />
             </div>
           </motion.div>
@@ -134,7 +134,7 @@ const HeroSection = () => {
         transition={{ delay: 1.5, duration: 0.5 }}
       >
         <a href="#about" className="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
-          <span className="mb-2">Scroll Down</span>
+          <span className="mb-2 mt-2">Scroll Down</span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
