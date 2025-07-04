@@ -126,15 +126,16 @@ const ContactSection = () => {
 
                     <motion.div
                         className="lg:w-2/3"
-                
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
+                        <motion.div
+                            className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700"
+                            layout>
                             <h3 className="text-xl font-bold mb-6">Send Me a Message</h3>
-                           
+
                             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
@@ -148,6 +149,8 @@ const ContactSection = () => {
                                             <input
                                                 id="name"
                                                 {...register("name")}
+                                                aria-invalid={!!errors.name}
+                                                aria-describedby={errors.name ? "name-error" : undefined}
                                                 className={`${inputBase} transition-colors duration-200 ${errors.name
                                                     ? 'border-red-500 focus:ring-red-500'
                                                     : 'focus:border-cyan-500 focus:ring-cyan-500'
@@ -171,6 +174,8 @@ const ContactSection = () => {
                                                 id="email"
                                                 type="email"
                                                 {...register("email")}
+                                                aria-invalid={!!errors.email}
+                                                aria-describedby={errors.email ? "email-error" : undefined}
                                                 className={`${inputBase} transition-colors duration-200 ${errors.email
                                                     ? 'border-red-500 focus:ring-red-500'
                                                     : 'focus:border-cyan-500 focus:ring-cyan-500'
@@ -195,6 +200,8 @@ const ContactSection = () => {
                                             id="message"
                                             rows={5}
                                             {...register("message")}
+                                            aria-invalid={!!errors.message}
+                                            aria-describedby={errors.message ? "message-error" : undefined}
                                             className={`${inputBase} transition-colors duration-200 ${errors.message
                                                 ? 'border-red-500 focus:ring-red-500'
                                                 : 'focus:border-cyan-500 focus:ring-cyan-500'
@@ -205,68 +212,76 @@ const ContactSection = () => {
                                         )}
                                     </motion.div>
                                 </div>
-                                <motion.button
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="flex items-center justify-center gap-2 w-full md:w-auto px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-semibold disabled:opacity-70"
-                                >
-                                    {isSubmitting ? (
-                                        'Sending...'
-                                    ) : (
-                                        <>
-                                            Send Message <FiSend />
-                                        </>
-                                    )}
-                                </motion.button>
-                                 <AnimatePresence>
-                                {submitMessage && (
-                                    <motion.div
-                                        key={submitStatus}
-                                        layout
-                                        className={`mt-5 mb-5 p-4 rounded-lg flex flex-col items-center ${submitStatus === 'success'
-                                            ? 'bg-green-900/30 text-green-400'
-                                            : 'bg-red-900/30 text-red-400'
-                                            }`}
-                                        aria-live="polite"
-                                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                    >
-                                        {submitStatus === 'success' && (
-                                            <motion.div
-                                                className="flex justify-center mb-2"
-                                                initial={{ scale: 0.7, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                            >
-                                                <svg
-                                                    className="w-14 h-14 text-green-400"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth={3}
-                                                    viewBox="0 0 48 48"
+                                <div className="flex items-center gap-4 mt-2">
+                                    {/* Button always takes 1/3 */}
+                                    <div className="w-1/3">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="flex items-center justify-center gap-2 w-full px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-semibold disabled:opacity-70"
+                                        >
+                                            {isSubmitting ? (
+                                                'Sending...'
+                                            ) : (
+                                                <>
+                                                    Send Message <FiSend />
+                                                </>
+                                            )}
+                                        </motion.button>
+                                    </div>
+                                    {/* Message takes 2/3, animates in/out */}
+                                    <div className="w-2/3">
+                                        <AnimatePresence mode="wait">
+                                            {submitMessage && (
+                                                <motion.div
+                                                    key={submitStatus}
+                                                    layout
+                                                    className={`p-4 rounded-lg flex flex-col items-center ${submitStatus === 'success'
+                                                        ? 'bg-green-900/30 text-green-400'
+                                                        : 'bg-red-900/30 text-red-400'
+                                                        }`}
+                                                    aria-live="polite"
+                                                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                                                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                                                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                                 >
-                                                    <motion.path
-                                                        d="M12 24l8 8 16-16"
-                                                        stroke="currentColor"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        initial={{ pathLength: 0 }}
-                                                        animate={{ pathLength: 1 }}
-                                                        transition={{ duration: 0.7, ease: "easeInOut" }}
-                                                    />
-                                                </svg>
-                                            </motion.div>
-                                        )}
-                                        {submitMessage}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                                    {submitStatus === 'success' && (
+                                                        <motion.div
+                                                            className="flex justify-center mb-2"
+                                                            initial={{ scale: 0.7, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
+                                                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                                        >
+                                                            <svg
+                                                                className="w-10 h-10 text-green-400"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth={3}
+                                                                viewBox="0 0 48 48"
+                                                            >
+                                                                <motion.path
+                                                                    d="M12 24l8 8 16-16"
+                                                                    stroke="currentColor"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    initial={{ pathLength: 0 }}
+                                                                    animate={{ pathLength: 1 }}
+                                                                    transition={{ duration: 0.7, ease: "easeInOut" }}
+                                                                />
+                                                            </svg>
+                                                        </motion.div>
+                                                    )}
+                                                    {submitMessage}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
                             </form>
-                        </div>
+                        </motion.div>
                     </motion.div>
                 </div>
             </div>

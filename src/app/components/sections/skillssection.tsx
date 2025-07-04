@@ -8,7 +8,7 @@ const SkillsSection = () => {
       icon: <FaReact className="text-cyan-400" />,
       items: [
         { name: 'React', level: 95 },
-        { name: 'Next.js', level: 90 },
+        { name: 'Next.js', level: 70 },
         { name: 'JavaScript', level: 95 },
         { name: 'TypeScript', level: 85 },
         { name: 'Tailwind CSS', level: 90 },
@@ -19,21 +19,20 @@ const SkillsSection = () => {
       category: 'Backend',
       icon: <FaNodeJs className="text-green-500" />,
       items: [
-        { name: 'Node.js', level: 90 },
-        { name: 'Express', level: 85 },
+        { name: 'NestJS', level: 90 },
+        { name: 'FastAPI', level: 85 },
         { name: 'Python', level: 80 },
         { name: 'RESTful APIs', level: 90 },
-        { name: 'GraphQL', level: 75 },
+
       ]
     },
     {
       category: 'Databases',
       icon: <FaDatabase className="text-yellow-500" />,
       items: [
-        { name: 'MongoDB', level: 85 },
-        { name: 'PostgreSQL', level: 80 },
-        { name: 'Firebase', level: 75 },
-        { name: 'Redis', level: 70 },
+
+        { name: 'PostgreSQL', level: 85 },
+        { name: 'PrismaORM', level: 80 }
       ]
     },
     {
@@ -41,10 +40,10 @@ const SkillsSection = () => {
       icon: <FaTools className="text-purple-500" />,
       items: [
         { name: 'Git', level: 90 },
-        { name: 'Docker', level: 75 },
-        { name: 'AWS', level: 70 },
-        { name: 'CI/CD', level: 80 },
-        { name: 'Testing', level: 85 },
+        { name: 'Github', level: 75 },
+        { name: 'Postman', level: 70 }
+
+
       ]
     }
   ];
