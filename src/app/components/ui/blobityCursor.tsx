@@ -9,7 +9,7 @@ type BlobityInstance = {
 };
 
 const BlobityCursor = () => {
-    const blobityRef = useRef<BlobityInstance | any>(null)
+    const blobityRef = useRef<BlobityInstance | null>(null)
 
     useEffect(() => {
 
