@@ -20,7 +20,7 @@ const AboutSection = () => {
                 <div className="w-64 h-64 rounded-xl overflow-hidden border-4 border-white/10">
                   <div className="bg-gradient-to-br from-cyan-400 to-blue-600 w-full h-full" />
                 </div>
-                {/* <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 -z-10 spin rotate-5"></div> */}
+               
               </div>
             </FadeInUp>
           </div>
@@ -31,18 +31,18 @@ const AboutSection = () => {
             </FadeInUp>
             <FadeInUp delay={0.5}>
               <p className="text-gray-300 mb-4">
-                I’m a curious builder at heart, someone who loves turning ideas into sleek, functional web experiences. My journey in tech began when I was
-                just a teenager, and I've been passionate about creating digital experiences ever since.
+                I&apos;m a curious builder at heart, someone who loves turning ideas into sleek, functional web experiences. My journey in tech began when I was
+                just a teenager, and I&apos;ve been passionate about creating digital experiences ever since.
               </p>
             </FadeInUp>
             <FadeInUp delay={0.6}>
               <p className="text-gray-300 mb-4">
-                I hold a Bachelor's degree in Computer Applications and can work comfortably across the stack—but I light up most when crafting front-end experiences that feel intuitive and smooth. I’m the kind of dev who enjoys the little wins—debugging a tricky bug, polishing a button animation, or watching clean data flow through a well-structured API.
+                I hold a Bachelor&apos;s degree in Computer Applications and can work comfortably across the stack—but I light up most when crafting front-end experiences that feel intuitive and smooth. I&apos;m the kind of dev who enjoys the little wins—debugging a tricky bug, polishing a button animation, or watching clean data flow through a well-structured API.
               </p>
             </FadeInUp>
             <FadeInUp delay={0.7}>
               <p className="text-gray-300 mb-6">
-                When I'm not coding, you can find me playing my fav sport, drawing sketches and doodles,
+                When I&apos;m not coding, you can find me playing my fav sport, drawing sketches and doodles,
                 or usually exploring new tools. I believe in lifelong learning and constantly
                 strive to expand my skill set.
               </p>

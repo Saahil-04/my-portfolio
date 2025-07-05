@@ -39,7 +39,7 @@ const ProjectCard = React.memo(function ProjectCard({
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 items-center">
           {/* Project image */}
           <motion.div
-            className="w-full lg:w-1/2 relative" 
+            className="w-full lg:w-1/2 relative"
             whileHover={{
               y: -5,
               transition: {
@@ -72,7 +72,7 @@ const ProjectCard = React.memo(function ProjectCard({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
             </motion.div>
-            
+
             {/* Decorative floating elements - hidden on mobile for performance */}
             <motion.div
               className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-6 h-6 sm:w-8 sm:h-8 bg-cyan-500 rounded-full filter blur-[15px] sm:blur-[20px] opacity-40 sm:opacity-60 z-0 hidden sm:block"
@@ -94,7 +94,7 @@ const ProjectCard = React.memo(function ProjectCard({
               }}
             />
           </motion.div>
-          
+
           {/* Project content */}
           <div className="w-full lg:w-1/2">
             <motion.div
@@ -117,7 +117,7 @@ const ProjectCard = React.memo(function ProjectCard({
               >
                 {project.title}
               </motion.h3>
-              
+
               <motion.p
                 className="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg leading-relaxed"
                 initial={{ opacity: 0, y: 10 }}
@@ -126,7 +126,7 @@ const ProjectCard = React.memo(function ProjectCard({
               >
                 {project.description}
               </motion.p>
-              
+
               {/* Technologies */}
               <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                 {project.technologies.map((tech, i) => (
@@ -150,7 +150,7 @@ const ProjectCard = React.memo(function ProjectCard({
                   </motion.span>
                 ))}
               </div>
-              
+
               {/* Action buttons */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <motion.a
@@ -176,10 +176,10 @@ const ProjectCard = React.memo(function ProjectCard({
                     transition: { type: "spring", stiffness: 400, damping: 8 }
                   }}
                 >
-                  <FiGithub className="text-base sm:text-lg" /> 
+                  <FiGithub className="text-base sm:text-lg" />
                   <span>GitHub</span>
                 </motion.a>
-                
+
                 <motion.a
                   href={project.live}
                   target="_blank"
@@ -204,7 +204,7 @@ const ProjectCard = React.memo(function ProjectCard({
                     transition: { type: "spring", stiffness: 400, damping: 8 }
                   }}
                 >
-                  <FiExternalLink className="text-base sm:text-lg" /> 
+                  <FiExternalLink className="text-base sm:text-lg" />
                   <span>Live Demo</span>
                 </motion.a>
               </div>
@@ -226,11 +226,10 @@ const NavigationDots = React.memo(({ projects, activeIndex, setActiveIndex }: {
       <motion.button
         key={index}
         onClick={() => setActiveIndex(index)}
-        className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all min-h-[20px] min-w-[20px] sm:min-h-auto sm:min-w-auto flex items-center justify-center ${
-          activeIndex === index
+        className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all min-h-[20px] min-w-[20px] sm:min-h-auto sm:min-w-auto flex items-center justify-center ${activeIndex === index
             ? 'bg-cyan-500'
             : 'bg-gray-700 hover:bg-gray-500'
-        }`}
+          }`}
         aria-label={`Go to project ${index + 1}`}
         animate={{
           scale: activeIndex === index ? 1.2 : 1,
@@ -247,6 +246,7 @@ const NavigationDots = React.memo(({ projects, activeIndex, setActiveIndex }: {
     ))}
   </div>
 ));
+NavigationDots.displayName = "NavigationDots";
 
 const ProjectsSection = () => {
   const projects: Project[] = [
@@ -293,7 +293,7 @@ const ProjectsSection = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -378,9 +378,9 @@ const ProjectsSection = () => {
   }, [handleWheel, isMobile]);
 
   return (
-    <section 
-      id="projects" 
-      className="py-12 sm:py-16 lg:py-20 max-w-full relative overflow-hidden min-h-screen" 
+    <section
+      id="projects"
+      className="py-12 sm:py-16 lg:py-20 max-w-full relative overflow-hidden min-h-screen"
       aria-label="Projects showcase"
       ref={sectionRef}
     >

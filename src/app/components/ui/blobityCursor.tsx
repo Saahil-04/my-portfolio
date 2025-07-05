@@ -2,11 +2,17 @@
 
 import { useEffect, useRef } from 'react'
 
+type BlobityInstance = {
+    pause?: () => void;
+    resume?: () => void;
+    destroy?: () => void;
+};
+
 const BlobityCursor = () => {
-    const blobityRef = useRef<any>(null)
+    const blobityRef = useRef<BlobityInstance | any>(null)
 
     useEffect(() => {
-        // Only run on desktop
+
         if (typeof window === 'undefined' || 'ontouchstart' in window) return
 
         let destroyed = false;

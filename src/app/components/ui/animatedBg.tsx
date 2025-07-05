@@ -1,14 +1,9 @@
 'use client';
 
 import { AnimatedBackground } from 'animated-backgrounds';
-// import 'animated-backgrounds/dist/index.css';
+
 
 export default function AnimatedBg() {
-
-  const animations = ['cyberGrid', 'particleNetwork', 'matrixRain', 'starryNight', 'gradientWave', 'floatingBubbles', 'auroraBorealis'] as const;
-  // type AnimationType = typeof animations[number];
-
-  const current = animations[6];
 
   return (
     <AnimatedBackground

@@ -50,6 +50,7 @@ const ContactSection = () => {
             setSubmitMessage("Your message has been sent successfully! I'll get back to you soon.");
             reset();
         } catch (error) {
+            console.log(error);
             setSubmitStatus('error');
             setSubmitMessage('Failed to send message. Please try again or contact me directly.');
         } finally {

@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image'
 import FadeInUp from '../ui/fadeInUp';
 import { useReducedMotion } from 'framer-motion'
-import { useRef } from 'react';
 import Typewriter from 'typewriter-effect';
 
 const HeroSection = () => {
@@ -65,7 +64,7 @@ const HeroSection = () => {
             <FadeInUp delay={shouldReduceMotion ? 0 : 0.5}>
               <p className="text-lg text-gray-300 mb-8 max-w-lg">
                 I build exceptional digital experiences that are fast, accessible,
-                visually appealing, and responsive. Let's create something amazing together.
+                visually appealing, and responsive. Let&apos;s create something amazing together.
               </p>
             </FadeInUp>
 

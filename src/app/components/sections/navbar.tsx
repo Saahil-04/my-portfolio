@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
 import SocialLinks from '../ui/socialLinks';
 
 type NavbarProps = {
