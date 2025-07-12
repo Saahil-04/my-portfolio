@@ -227,8 +227,8 @@ const NavigationDots = React.memo(({ projects, activeIndex, setActiveIndex }: {
         key={index}
         onClick={() => setActiveIndex(index)}
         className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all min-h-[20px] min-w-[20px] sm:min-h-auto sm:min-w-auto flex items-center justify-center ${activeIndex === index
-            ? 'bg-cyan-500'
-            : 'bg-gray-700 hover:bg-gray-500'
+          ? 'bg-cyan-500'
+          : 'bg-gray-700 hover:bg-gray-500'
           }`}
         aria-label={`Go to project ${index + 1}`}
         animate={{
@@ -277,6 +277,16 @@ const ProjectsSection = () => {
       github: 'https://github.com/Saahil-04/Movie-Recommendor',
       live: 'https://github.com/Saahil-04/Movie-Recommendor',
     },
+    {
+      id: 4,
+      title: 'PostureSense',
+      description: 'AI-powered posture analysis web app that detects improper posture using either video uploads or real-time webcam input.',
+      technologies: ['React', 'TailwindCSS', 'Python','FastAPI','MediaPipe','OpenCV'],
+      src: '/PostureSense.png',
+      github: 'https://github.com/Saahil-04/PostureSense',
+      live: 'https://posture-sense-blond.vercel.app/',
+    },
+
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);

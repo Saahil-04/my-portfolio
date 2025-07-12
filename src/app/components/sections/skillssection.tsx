@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { FaReact, FaNodeJs, FaDatabase, FaTools } from 'react-icons/fa';
-
+import AnimatedCounter from "../ui/animatedCounter";
 const SkillsSection = () => {
   const skills = [
     {
@@ -85,7 +85,7 @@ const SkillsSection = () => {
                   <div key={idx}>
                     <div className="flex justify-between mb-1">
                       <span className="text-gray-200 font-medium">{skill.name}</span>
-                      <span className="text-cyan-400 font-semibold">{skill.level}%</span>
+                     <AnimatedCounter end={skill.level} duration={1} delay={0.2} suffix="%" />
                     </div>
                     <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
                       <motion.div

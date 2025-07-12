@@ -20,7 +20,7 @@ const AboutSection = () => {
                 <div className="w-64 h-64 rounded-xl overflow-hidden border-4 border-white/10">
                   <div className="bg-gradient-to-br from-cyan-400 to-blue-600 w-full h-full" />
                 </div>
-               
+
               </div>
             </FadeInUp>
           </div>
@@ -50,16 +50,16 @@ const AboutSection = () => {
             <FadeInUp delay={0.8}>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-bold text-cyan-400">7+ Years</h4>
-                  <p>Experience</p>
+                  <h4 className="font-bold text-cyan-400">Self-Taught</h4>
+                  <p>Consistently learning and building</p>
                 </div>
                 <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-bold text-cyan-400">50+ Projects</h4>
-                  <p>Completed</p>
+                  <h4 className="font-bold text-cyan-400">5+ Projects</h4>
+                  <p>Built fullstack apps independently</p>
                 </div>
                 <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-bold text-cyan-400">20+ Clients</h4>
-                  <p>Worldwide</p>
+                  <h4 className="font-bold text-cyan-400">Modern Stack</h4>
+                  <p>Next.js · Prisma · FastAPI · PostgreSQL</p>
                 </div>
               </div>
             </FadeInUp>
