@@ -133,7 +133,7 @@ const HeroSection = () => {
         transition={{ delay: 1.5, duration: 0.5 }}
       >
         <a href="#about" className="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
-      <span className="mb-2 mt-2">Scroll Down</span>
+      <span className="mb-2 mt-6">Scroll Down</span>
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 1.5 }}
