@@ -1,8 +1,9 @@
 'use client';
-import { motion, useInView } from 'framer-motion';
-import { FiGithub, FiExternalLink, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 type Project = {
   id: number;
@@ -216,29 +217,29 @@ const ProjectCard = React.memo(function ProjectCard({
   );
 });
 
-const NavigationDots = React.memo(({ projects, activeIndex, setActiveIndex }: {
+const NavigationDots = React.memo(({ projects, activeIndex, scrollTo }: {
   projects: Project[];
   activeIndex: number;
-  setActiveIndex: (idx: number) => void;
+  scrollTo: (index: number) => void;
 }) => (
   <div className="flex justify-center mt-4 sm:mt-6 space-x-2">
     {projects.map((_, index) => (
       <motion.button
         key={index}
-        onClick={() => setActiveIndex(index)}
+        onClick={() => scrollTo(index)}
         className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all min-h-[20px] min-w-[20px] sm:min-h-auto sm:min-w-auto flex items-center justify-center ${activeIndex === index
-          ? 'bg-cyan-500'
-          : 'bg-gray-700 hover:bg-gray-500'
+            ? 'bg-cyan-500'
+            : 'bg-gray-700 hover:bg-gray-500'
           }`}
         aria-label={`Go to project ${index + 1}`}
         animate={{
           scale: activeIndex === index ? 1.2 : 1,
-          opacity: activeIndex === index ? 1 : 0.7
+          opacity: activeIndex === index ? 1 : 0.7,
         }}
         transition={{
-          type: "spring",
+          type: 'spring',
           stiffness: 500,
-          damping: 15
+          damping: 15,
         }}
       >
         <span className="sr-only">Project {index + 1}</span>
@@ -281,120 +282,58 @@ const ProjectsSection = () => {
       id: 4,
       title: 'PostureSense',
       description: 'AI-powered posture analysis web app that detects improper posture using either video uploads or real-time webcam input.',
-      technologies: ['React', 'TailwindCSS', 'Python','FastAPI','MediaPipe','OpenCV'],
+      technologies: ['React', 'TailwindCSS', 'Python', 'FastAPI', 'MediaPipe', 'OpenCV'],
       src: '/PostureSense.png',
       github: 'https://github.com/Saahil-04/PostureSense',
       live: 'https://posture-sense-blond.vercel.app/',
     },
-
   ];
 
+  // Use only Embla Carousel
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
   const [activeIndex, setActiveIndex] = useState(0);
-  const wheelTimeout = useRef<NodeJS.Timeout | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.3, once: false });
-  const isDraggingRef = useRef(false);
-  const touchStartX = useRef(0);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile devices
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) {
+      emblaApi.scrollTo(index);
+    }
+  }, [emblaApi]);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setActiveIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    if (!emblaApi) return;
+
+    // Set initial active index
+    onSelect();
+
+    // Listen for slide changes
+    emblaApi.on('select', onSelect);
+
+    // Cleanup
+    return () => {
+      emblaApi.off('select', onSelect);
     };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Auto-scroll to active project
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const projectWidth = container.clientWidth;
-    container.scrollTo({
-      left: activeIndex * projectWidth,
-      behavior: 'smooth'
-    });
-
-    // Focus management for accessibility
-    const activeSlide = container.querySelector(`[data-index="${activeIndex}"]`);
-    if (activeSlide instanceof HTMLElement) {
-      activeSlide.focus({ preventScroll: true });
-    }
-  }, [activeIndex]);
-
-  // Keyboard navigation
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'ArrowRight') {
-      setActiveIndex(prev => (prev + 1) % projects.length);
-    } else if (e.key === 'ArrowLeft') {
-      setActiveIndex(prev => (prev - 1 + projects.length) % projects.length);
-    } else if (e.key >= '1' && e.key <= '9') {
-      const num = parseInt(e.key, 10) - 1;
-      if (num < projects.length) setActiveIndex(num);
-    }
-  }, [projects.length]);
-
-  useEffect(() => {
-    if (!isMobile) {
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [handleKeyDown, isMobile]);
-
-  // Touch handling (memoized)
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    isDraggingRef.current = true;
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX;
-    const swipeThreshold = 50;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      setActiveIndex(prev =>
-        (prev + (diff > 0 ? 1 : -1) + projects.length) % projects.length
-      );
-    }
-  }, [projects.length]);
-
-  // Wheel handling with debouncing (disabled on mobile)
-  const handleWheel = useCallback((e: WheelEvent) => {
-    if (isMobile || !containerRef.current || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-    e.preventDefault();
-    if (wheelTimeout.current) return;
-    const direction = e.deltaY > 0 ? 1 : -1;
-    setActiveIndex(prev => (prev + direction + projects.length) % projects.length);
-    wheelTimeout.current = setTimeout(() => {
-      wheelTimeout.current = null;
-    }, 400);
-  }, [projects.length, isMobile]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || isMobile) return;
-
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
-  }, [handleWheel, isMobile]);
+  }, [emblaApi, onSelect]);
 
   return (
     <section
       id="projects"
       className="py-12 sm:py-16 lg:py-20 max-w-full relative overflow-hidden min-h-screen"
-      aria-label="Projects showcase"
-      ref={sectionRef}
+      aria-label="Projects Showcase"
     >
-      {/* Decorative gradient background */}
+      {/* Decorative background */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-64 sm:h-64 bg-cyan-500 rounded-full filter blur-[60px] sm:blur-[100px] opacity-5 sm:opacity-10 animate-pulse-slow" />
         <div className="absolute top-1/3 right-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-purple-500 rounded-full filter blur-[80px] sm:blur-[120px] opacity-5 sm:opacity-10 animate-pulse-slower" />
@@ -405,100 +344,111 @@ const ProjectsSection = () => {
         className="relative z-20 pb-6 sm:pb-8 lg:pb-10"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
       >
         <div className="container mx-auto px-4 sm:px-6">
           <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold">
-            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Projects</span>
+            My{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+              Projects
+            </span>
           </h2>
-          <NavigationDots projects={projects} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
+          {/* Navigation Dots */}
+          <NavigationDots
+            projects={projects}
+            activeIndex={activeIndex}
+            scrollTo={scrollTo}
+          />
         </div>
       </motion.div>
 
-      {/* Horizontal carousel container */}
-      <div className="relative z-10">
-        {/* Navigation arrows - hidden on mobile */}
-        <motion.button
-          className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 z-20 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full p-2 sm:p-3 hover:bg-cyan-700 transition-colors hidden sm:block"
-          onClick={() => setActiveIndex(prev => (prev - 1 + projects.length) % projects.length)}
-          aria-label="Previous project"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FiChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-        </motion.button>
-
-        <motion.button
-          className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-20 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full p-2 sm:p-3 hover:bg-cyan-700 transition-colors hidden sm:block"
-          onClick={() => setActiveIndex(prev => (prev + 1) % projects.length)}
-          aria-label="Next project"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FiChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-        </motion.button>
-
-        {/* Projects carousel */}
-        <div
-          ref={containerRef}
-          className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar w-full max-w-full"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          role="region"
-          aria-label="Projects carousel"
-        >
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              activeIndex={activeIndex}
-            />
-          ))}
+      {/* Embla Carousel */}
+      <div className="relative z-10 w-full">
+        <div className="embla overflow-hidden" ref={emblaRef}>
+          <div className="embla__container flex">
+            {projects.map((project, index) => (
+              <div key={project.id} className="embla__slide flex-[0_0_100%] min-w-0">
+                <ProjectCard
+                  project={project}
+                  index={index}
+                  activeIndex={activeIndex}
+                />
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Navigation Arrows */}
+        <motion.button
+          onClick={scrollPrev}
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-800/30 sm:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 sm:border-gray-700 rounded-full p-2 sm:p-3 hover:bg-gray-700/50 transition-colors opacity-70 sm:opacity-100"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Previous project"
+        >
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </motion.button>
+
+        <motion.button
+          onClick={scrollNext}
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-800/30 sm:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 sm:border-gray-700 rounded-full p-2 sm:p-3 hover:bg-gray-700/50 transition-colors opacity-70 sm:opacity-100"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Next project"
+        >
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </motion.button>
       </div>
 
-      {/* Mobile-friendly scroll indicator */}
-      {isInView && (
+      {/* Mobile Scroll Indicator */}
+      <motion.div
+        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 text-center text-gray-400 z-30 px-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ delay: 0.2 }}
+      >
+        <p className="text-sm sm:text-base">Swipe to view projects</p>
         <motion.div
-          className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 text-center text-gray-400 z-30 px-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.2 }}
+          animate={{ x: [-5, 5] }}
+          transition={{
+            repeat: Infinity,
+            repeatType: 'mirror',
+            type: 'spring',
+            stiffness: 300,
+            damping: 10,
+            duration: 1.5,
+          }}
         >
-          <p className="mb-2 text-sm sm:text-base">
-            {isMobile ? 'Swipe to view projects' : 'Scroll horizontally to view projects'}
-          </p>
-          <motion.div
-            animate={{ x: [-5, 5] }}
-            transition={{
-              repeat: Infinity,
-              repeatType: "mirror",
-              type: "spring",
-              stiffness: 300,
-              damping: 10,
-              duration: 1.5
-            }}
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6 mx-auto"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-            </svg>
-          </motion.div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 5l7 7-7 7M5 5l7 7-7 7"
+            />
+          </svg>
         </motion.div>
-      )}
-
-      {/* Add CSS for hiding scrollbar */}
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+      </motion.div>
     </section>
   );
 };
