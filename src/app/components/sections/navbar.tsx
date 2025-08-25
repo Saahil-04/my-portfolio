@@ -21,8 +21,8 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
 
   // Transform values based on scroll
   const navbarY = useTransform(scrollY, [0, 100], [0, 0]);
-  const backdropBlur = useTransform(scrollY, [0, 100], [0.3, 0.8]);
-  const borderOpacity = useTransform(scrollY, [0, 100], [0, 0.2]);
+  // const backdropBlur = useTransform(scrollY, [0, 100], [0.3, 0.8]);
+  // const borderOpacity = useTransform(scrollY, [0, 100], [0, 0.2]);
 
   useEffect(() => {
     const unsubscribe = scrollY.onChange((latest) => {
