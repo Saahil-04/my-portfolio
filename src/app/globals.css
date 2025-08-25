@@ -45,3 +45,16 @@
 .spring-bounce {
   animation-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
+
+/* globals.css */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
