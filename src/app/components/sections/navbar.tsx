@@ -13,7 +13,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
   
   const navItems = [
     { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Projects' },
+    { id: 'projects', label: 'Projects' },  
     { id: 'journey', label: 'Journey' },
     { id: 'skills', label: 'Skills' },
     { id: 'contact', label: 'Contact' }
@@ -121,20 +121,6 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
               </motion.div>
       </motion.nav>
 
-      {/* Mobile Menu Button - only show when scrolled */}
-      {isScrolled && (
-        <motion.button
-          className="md:hidden fixed top-6 right-6 bg-black/60 backdrop-blur-xl rounded-full p-3 border border-white/10 shadow-lg z-60"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </motion.button>
-      )}
     </motion.div>
   );
 };
