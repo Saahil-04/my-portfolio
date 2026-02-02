@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "packageManager": "yarn@1.22.19"
