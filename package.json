@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "packageManager": "yarn@1.22.19"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
