@@ -1,6 +1,6 @@
 'use client';
-import { motion } from 'framer-motion';
-import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiGithub, FiExternalLink, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
 import React, { useState, useEffect, useCallback } from 'react';
@@ -13,298 +13,85 @@ type Project = {
   src: string;
   github: string;
   live: string;
+  year: string;
+  role: string;
 };
 
-const ProjectCard = React.memo(function ProjectCard({
-  project,
-  index,
-  activeIndex,
-}: {
-  project: Project;
-  index: number;
-  activeIndex: number;
-}) {
-  return (
-    <motion.div
-      key={project.id}
-      data-index={index}
-      className="flex-shrink-0 w-full snap-center focus:outline-none"
-      tabIndex={activeIndex === index ? 0 : -1}
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      aria-label={`Project ${index + 1}: ${project.title}`}
-      aria-roledescription="slide"
-    >
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 items-center">
-          {/* Project image */}
-          <motion.div
-            className="w-full lg:w-1/2 relative"
-            whileHover={{
-              y: -5,
-              transition: {
-                type: "spring",
-                stiffness: 400,
-                damping: 10
-              }
-            }}
-          >
-            <motion.div
-              className="relative w-full aspect-video rounded-lg sm:rounded-xl overflow-hidden border border-gray-700 shadow-lg sm:shadow-2xl"
-              whileHover={{
-                scale: 1.01,
-                boxShadow: "0 25px 50px -12px rgba(6, 182, 212, 0.25)"
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 15
-              }}
-            >
-              <Image
-                src={project.src}
-                alt={project.title}
-                fill
-                className="object-cover"
-                priority={activeIndex === index}
-                loading={activeIndex === index ? "eager" : "lazy"}
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-            </motion.div>
+const projects: Project[] = [
+  {
+    id: 1,
+    title: 'SaranshAI',
+    description: 'Collaborated on a full-featured summarizer for text, URLs, images and PDFs — bringing together multiple AI pipelines into a single clean interface.',
+    technologies: ['React.js', 'Nest.js', 'Python', 'PostgreSQL', 'Prisma ORM', 'Material UI'],
+    src: '/SaranshAI.png',
+    github: 'https://github.com/Saahil-04/Saransh-AI',
+    live: 'https://github.com/Saahil-04/Saransh-AI',
+    year: '2024',
+    role: 'Fullstack',
+  },
+  {
+    id: 2,
+    title: 'Royal Rolling Shutter',
+    description: 'A polished portfolio website for a shutter business — SEO-optimised with contact integration and a clean, conversion-focused layout.',
+    technologies: ['React.js', 'Material UI', 'EmailJS', 'SEO'],
+    src: '/RoyalRollingShutters.png',
+    github: 'https://github.com/Nayum-khan/RoyalRollingShutter',
+    live: 'https://www.royalrollingshutter.com/',
+    year: '2024',
+    role: 'Frontend',
+  },
+  {
+    id: 3,
+    title: 'Movie Recommendor',
+    description: 'A mood-based movie recommendation engine that filters TMDB data through custom logic to surface films that match how you feel right now.',
+    technologies: ['React', 'Material UI', 'Python', 'TMDB API'],
+    src: '/MovieRecommendor.png',
+    github: 'https://github.com/Saahil-04/Movie-Recommendor',
+    live: 'https://github.com/Saahil-04/Movie-Recommendor',
+    year: '2023',
+    role: 'Fullstack',
+  },
+  {
+    id: 4,
+    title: 'PostureSense',
+    description: 'AI-powered posture analysis using computer vision — detects and flags improper posture in real-time via webcam or uploaded video.',
+    technologies: ['React', 'TailwindCSS', 'Python', 'FastAPI', 'MediaPipe', 'OpenCV'],
+    src: '/PostureSense.png',
+    github: 'https://github.com/Saahil-04/PostureSense',
+    live: 'https://posture-sense-blond.vercel.app/',
+    year: '2024',
+    role: 'Fullstack',
+  },
+];
 
-            {/* Decorative floating elements - hidden on mobile for performance */}
-            <motion.div
-              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-6 h-6 sm:w-8 sm:h-8 bg-cyan-500 rounded-full filter blur-[15px] sm:blur-[20px] opacity-40 sm:opacity-60 z-0 hidden sm:block"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 2,
-                ease: "easeInOut"
-              }}
-            />
-            <motion.div
-              className="absolute -bottom-2 -left-2 sm:-bottom-4 sm:-left-4 w-8 h-8 sm:w-12 sm:h-12 bg-purple-500 rounded-full filter blur-[20px] sm:blur-[30px] opacity-30 sm:opacity-40 z-0 hidden sm:block"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 3,
-                ease: "easeInOut",
-                delay: 0.5
-              }}
-            />
-          </motion.div>
+const roleColors: Record<string, string> = {
+  Fullstack: 'rgba(34,211,238,0.15)',
+  Frontend: 'rgba(139,92,246,0.15)',
+};
+const roleBorder: Record<string, string> = {
+  Fullstack: 'rgba(34,211,238,0.35)',
+  Frontend: 'rgba(139,92,246,0.35)',
+};
+const roleText: Record<string, string> = {
+  Fullstack: '#22d3ee',
+  Frontend: '#a78bfa',
+};
 
-          {/* Project content */}
-          <div className="w-full lg:w-1/2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: 0.2,
-                type: "spring",
-                stiffness: 200,
-                damping: 20
-              }}
-            >
-              <motion.h3
-                className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent break-words"
-                whileHover={{
-                  scale: 1.01,
-                  transition: { type: "spring", stiffness: 400, damping: 10 }
-                }}
-              >
-                {project.title}
-              </motion.h3>
-
-              <motion.p
-                className="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg leading-relaxed"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                {project.description}
-              </motion.p>
-
-              {/* Technologies */}
-              <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
-                {project.technologies.map((tech, i) => (
-                  <motion.span
-                    key={tech}
-                    className="px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-md sm:rounded-lg text-xs sm:text-sm whitespace-nowrap"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 15,
-                      delay: 0.4 + (i * 0.05)
-                    }}
-                    whileHover={{
-                      scale: 1.05,
-                      transition: { type: "spring", stiffness: 400, damping: 8 }
-                    }}
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <motion.a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg hover:bg-cyan-900/30 transition-colors text-sm sm:text-base min-h-[44px] sm:min-h-auto"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 15,
-                    delay: 0.5
-                  }}
-                  whileHover={{
-                    scale: 1.02,
-                    y: -1,
-                    transition: { type: "spring", stiffness: 400, damping: 8 }
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                    transition: { type: "spring", stiffness: 400, damping: 8 }
-                  }}
-                >
-                  <FiGithub className="text-base sm:text-lg" />
-                  <span>GitHub</span>
-                </motion.a>
-
-                <motion.a
-                  href={project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base min-h-[44px] sm:min-h-auto"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 15,
-                    delay: 0.6
-                  }}
-                  whileHover={{
-                    scale: 1.02,
-                    y: -1,
-                    boxShadow: "0 10px 25px -5px rgba(6, 182, 212, 0.4)",
-                    transition: { type: "spring", stiffness: 400, damping: 8 }
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                    transition: { type: "spring", stiffness: 400, damping: 8 }
-                  }}
-                >
-                  <FiExternalLink className="text-base sm:text-lg" />
-                  <span>Live Demo</span>
-                </motion.a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-});
-
-const NavigationDots = React.memo(({ projects, activeIndex, scrollTo }: {
-  projects: Project[];
-  activeIndex: number;
-  scrollTo: (index: number) => void;
-}) => (
-  <div className="flex justify-center mt-4 sm:mt-6 space-x-2">
-    {projects.map((_, index) => (
-      <motion.button
-        key={index}
-        onClick={() => scrollTo(index)}
-        className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all min-h-[20px] min-w-[20px] sm:min-h-auto sm:min-w-auto flex items-center justify-center ${activeIndex === index
-            ? 'bg-cyan-500'
-            : 'bg-gray-700 hover:bg-gray-500'
-          }`}
-        aria-label={`Go to project ${index + 1}`}
-        animate={{
-          scale: activeIndex === index ? 1.2 : 1,
-          opacity: activeIndex === index ? 1 : 0.7,
-        }}
-        transition={{
-          type: 'spring',
-          stiffness: 500,
-          damping: 15,
-        }}
-      >
-        <span className="sr-only">Project {index + 1}</span>
-      </motion.button>
-    ))}
-  </div>
-));
-NavigationDots.displayName = "NavigationDots";
-
-const ProjectsSection = () => {
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: 'SaranshAI - AI Summarizer',
-      description: 'Collaborated on a full-featured summarizer for text, url, images and pdfs.',
-      technologies: ['Reactjs', 'Nestjs', 'Python', 'PostgreSQL', 'Prisma ORM', 'Material UI'],
-      src: '/SaranshAI.png',
-      github: 'https://github.com/Saahil-04/Saransh-AI',
-      live: 'https://github.com/Saahil-04/Saransh-AI',
-    },
-    {
-      id: 2,
-      title: 'Royal Rolling Shutter',
-      description: 'A collaborative Portfolio website for a Shutter Shop.',
-      technologies: ['Reactjs', 'Material UI', 'EmailJS', 'SEO'],
-      src: '/RoyalRollingShutters.png',
-      github: 'https://github.com/Nayum-khan/RoyalRollingShutter',
-      live: 'https://www.royalrollingshutter.com/',
-    },
-    {
-      id: 3,
-      title: 'Movie Recommendor',
-      description: 'Movie Recommendation System based on certain mood filters.',
-      technologies: ['React', 'Material UI', 'Python', 'TMDB API'],
-      src: '/MovieRecommendor.png',
-      github: 'https://github.com/Saahil-04/Movie-Recommendor',
-      live: 'https://github.com/Saahil-04/Movie-Recommendor',
-    },
-    {
-      id: 4,
-      title: 'PostureSense',
-      description: 'AI-powered posture analysis web app that detects improper posture using either video uploads or real-time webcam input.',
-      technologies: ['React', 'TailwindCSS', 'Python', 'FastAPI', 'MediaPipe', 'OpenCV'],
-      src: '/PostureSense.png',
-      github: 'https://github.com/Saahil-04/PostureSense',
-      live: 'https://posture-sense-blond.vercel.app/',
-    },
-  ];
-
-  // Use only Embla Carousel
+export default function ProjectsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
 
-  const scrollTo = useCallback((index: number) => {
-    if (emblaApi) {
-      emblaApi.scrollTo(index);
-    }
-  }, [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
+    setDirection(-1);
+    emblaApi?.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
+    setDirection(1);
+    emblaApi?.scrollNext();
   }, [emblaApi]);
 
   const onSelect = useCallback(() => {
@@ -314,143 +101,278 @@ const ProjectsSection = () => {
 
   useEffect(() => {
     if (!emblaApi) return;
-
-    // Set initial active index
     onSelect();
-
-    // Listen for slide changes
     emblaApi.on('select', onSelect);
-
-    // Cleanup
-    return () => {
-      emblaApi.off('select', onSelect);
-    };
+    return () => { emblaApi.off('select', onSelect); };
   }, [emblaApi, onSelect]);
+
+  const project = projects[activeIndex];
 
   return (
     <section
       id="projects"
-      className="py-12 sm:py-16 lg:py-20 max-w-full relative overflow-hidden min-h-screen"
+      className="relative py-28 overflow-hidden"
+      style={{ background: 'linear-gradient(160deg, #060c18 0%, #08111f 50%, #060b14 100%)' }}
       aria-label="Projects Showcase"
     >
-      {/* Decorative background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-64 sm:h-64 bg-cyan-500 rounded-full filter blur-[60px] sm:blur-[100px] opacity-5 sm:opacity-10 animate-pulse-slow" />
-        <div className="absolute top-1/3 right-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-purple-500 rounded-full filter blur-[80px] sm:blur-[120px] opacity-5 sm:opacity-10 animate-pulse-slower" />
+      {/* Ambient background elements */}
+      <div className="pointer-events-none absolute inset-0">
+        <div style={{
+          position: 'absolute', width: 600, height: 600, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(34,211,238,0.05) 0%, transparent 70%)',
+          top: '-100px', right: '-150px',
+        }} />
+        <div style={{
+          position: 'absolute', width: 400, height: 400, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)',
+          bottom: '0px', left: '-100px',
+        }} />
+        {/* Subtle grid */}
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.025,
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+          backgroundSize: '48px 48px',
+        }} />
       </div>
 
-      {/* Header */}
-      <motion.div
-        className="relative z-20 pb-6 sm:pb-8 lg:pb-10"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-      >
-        <div className="container mx-auto px-4 sm:px-6">
-          <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold">
-            My{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-              Projects
-            </span>
-          </h2>
-          {/* Navigation Dots */}
-          <NavigationDots
-            projects={projects}
-            activeIndex={activeIndex}
-            scrollTo={scrollTo}
-          />
-        </div>
-      </motion.div>
+      <div className="container max-w-6xl mx-auto px-6 relative z-10">
 
-      {/* Embla Carousel */}
-      <div className="relative z-10 w-full">
-        <div className="embla overflow-hidden" ref={emblaRef}>
-          <div className="embla__container flex">
-            {projects.map((project, index) => (
-              <div key={project.id} className="embla__slide flex-[0_0_100%] min-w-0">
-                <ProjectCard
-                  project={project}
-                  index={index}
-                  activeIndex={activeIndex}
-                />
-              </div>
+        {/* Section header */}
+        <motion.div
+          className="flex items-center gap-5 mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <div className="flex flex-col">
+            <span className="text-xs font-mono tracking-[0.3em] uppercase mb-2" style={{ color: 'rgba(34,211,238,0.7)' }}>
+              02 / Work
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              Selected{' '}
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #22d3ee, #3b82f6)' }}>
+                Projects
+              </span>
+            </h2>
+          </div>
+          <div className="flex-1 h-px ml-4" style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.4), transparent)' }} />
+          <span className="text-sm font-mono" style={{ color: 'rgba(255,255,255,0.25)' }}>
+            {String(activeIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+          </span>
+        </motion.div>
+
+        {/* Main card area */}
+        <div className="relative">
+          <div className="embla overflow-hidden rounded-2xl" ref={emblaRef}>
+            <div className="embla__container flex">
+              {projects.map((p, index) => (
+                <div key={p.id} className="embla__slide flex-[0_0_100%] min-w-0">
+                  <div className="grid lg:grid-cols-2 gap-0 min-h-120"
+                    style={{
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid rgba(255,255,255,0.07)',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {/* Image panel */}
+                    <div className="relative overflow-hidden" style={{ minHeight: '280px' }}>
+                      <Image
+                        src={p.src}
+                        alt={p.title}
+                        fill
+                        className="object-cover transition-transform duration-700 hover:scale-105"
+                        priority={activeIndex === index}
+                        loading={activeIndex === index ? 'eager' : 'lazy'}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                      {/* Overlay gradient */}
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        background: 'linear-gradient(to right, transparent 60%, rgba(6,11,20,0.95) 100%), linear-gradient(to top, rgba(6,11,20,0.6) 0%, transparent 40%)',
+                      }} />
+                      {/* Year badge */}
+                      <div style={{
+                        position: 'absolute', top: 16, left: 16,
+                        padding: '4px 12px', borderRadius: '20px',
+                        background: 'rgba(6,11,20,0.8)', backdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        fontSize: '0.75rem', fontFamily: 'monospace',
+                        color: 'rgba(255,255,255,0.5)',
+                      }}>
+                        {p.year}
+                      </div>
+                    </div>
+
+                    {/* Content panel */}
+                    <div className="flex flex-col justify-between p-8 lg:p-10">
+                      <div>
+                        {/* Role tag */}
+                        <div className="flex items-center gap-3 mb-5">
+                          <span style={{
+                            padding: '3px 10px', borderRadius: '20px', fontSize: '0.7rem',
+                            fontFamily: 'monospace', letterSpacing: '0.1em', textTransform: 'uppercase',
+                            background: roleColors[p.role] || 'rgba(255,255,255,0.08)',
+                            border: `1px solid ${roleBorder[p.role] || 'rgba(255,255,255,0.1)'}`,
+                            color: roleText[p.role] || 'rgba(255,255,255,0.5)',
+                          }}>
+                            {p.role}
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl lg:text-3xl font-bold mb-4 leading-tight" style={{ letterSpacing: '-0.02em' }}>
+                          {p.title}
+                        </h3>
+
+                        <p className="mb-6 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.96rem' }}>
+                          {p.description}
+                        </p>
+
+                        {/* Tech stack */}
+                        <div className="flex flex-wrap gap-2 mb-8">
+                          {p.technologies.map((tech) => (
+                            <span key={tech} style={{
+                              padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem',
+                              background: 'rgba(255,255,255,0.04)',
+                              border: '1px solid rgba(255,255,255,0.08)',
+                              color: 'rgba(255,255,255,0.45)',
+                              fontFamily: 'monospace',
+                            }}>
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-3">
+                        <motion.a
+                          href={p.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+                          style={{
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: 'rgba(255,255,255,0.7)',
+                          }}
+                          whileHover={{ y: -2, background: 'rgba(255,255,255,0.09)' }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          <FiGithub />
+                          <span>Source</span>
+                        </motion.a>
+
+                        <motion.a
+                          href={p.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium"
+                          style={{
+                            background: 'linear-gradient(135deg, #0891b2, #1d4ed8)',
+                            color: '#fff',
+                            boxShadow: '0 0 0 1px rgba(34,211,238,0.2)',
+                          }}
+                          whileHover={{
+                            y: -2,
+                            boxShadow: '0 8px 30px rgba(34,211,238,0.25)',
+                          }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          <FiExternalLink />
+                          <span>Live Demo</span>
+                        </motion.a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Carousel nav arrows */}
+          <motion.button
+            onClick={scrollPrev}
+            className="absolute -left-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full"
+            style={{
+              background: 'rgba(10,22,40,0.95)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(8px)',
+              color: 'rgba(255,255,255,0.7)',
+            }}
+            whileHover={{ scale: 1.1, borderColor: 'rgba(34,211,238,0.4)', color: '#22d3ee' }}
+            whileTap={{ scale: 0.94 }}
+            aria-label="Previous project"
+          >
+            <FiArrowLeft size={18} />
+          </motion.button>
+
+          <motion.button
+            onClick={scrollNext}
+            className="absolute -right-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full"
+            style={{
+              background: 'rgba(10,22,40,0.95)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(8px)',
+              color: 'rgba(255,255,255,0.7)',
+            }}
+            whileHover={{ scale: 1.1, borderColor: 'rgba(34,211,238,0.4)', color: '#22d3ee' }}
+            whileTap={{ scale: 0.94 }}
+            aria-label="Next project"
+          >
+            <FiArrowRight size={18} />
+          </motion.button>
+        </div>
+
+        {/* Bottom nav row */}
+        <div className="flex items-center justify-between mt-8">
+          {/* Dot indicators */}
+          <div className="flex items-center gap-2">
+            {projects.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollTo(i)}
+                aria-label={`Go to project ${i + 1}`}
+                style={{
+                  width: activeIndex === i ? 28 : 8,
+                  height: 8,
+                  borderRadius: 999,
+                  background: activeIndex === i
+                    ? 'linear-gradient(90deg, #22d3ee, #3b82f6)'
+                    : 'rgba(255,255,255,0.12)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                  padding: 0,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Project title preview strip */}
+          <div className="hidden md:flex items-center gap-6">
+            {projects.map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => scrollTo(i)}
+                className="text-xs font-mono transition-all duration-200"
+                style={{
+                  color: activeIndex === i ? '#22d3ee' : 'rgba(255,255,255,0.2)',
+                  letterSpacing: '0.05em',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: activeIndex === i ? 'underline' : 'none',
+                  textUnderlineOffset: '4px',
+                }}
+              >
+                {p.title}
+              </button>
             ))}
           </div>
         </div>
-
-        {/* Navigation Arrows */}
-        <motion.button
-          onClick={scrollPrev}
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-800/30 sm:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 sm:border-gray-700 rounded-full p-2 sm:p-3 hover:bg-gray-700/50 transition-colors opacity-70 sm:opacity-100"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Previous project"
-        >
-          <svg
-            className="w-5 h-5 sm:w-6 sm:h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </motion.button>
-
-        <motion.button
-          onClick={scrollNext}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-800/30 sm:bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 sm:border-gray-700 rounded-full p-2 sm:p-3 hover:bg-gray-700/50 transition-colors opacity-70 sm:opacity-100"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Next project"
-        >
-          <svg
-            className="w-5 h-5 sm:w-6 sm:h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </motion.button>
       </div>
-
-      {/* Mobile Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 text-center text-gray-400 z-30 px-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ delay: 0.2 }}
-      >
-        <p className="text-sm sm:text-base">Swipe to view projects</p>
-        <motion.div
-          animate={{ x: [-5, 5] }}
-          transition={{
-            repeat: Infinity,
-            repeatType: 'mirror',
-            type: 'spring',
-            stiffness: 300,
-            damping: 10,
-            duration: 1.5,
-          }}
-        >
-          <svg
-            className="w-5 h-5 sm:w-6 sm:h-6 mx-auto"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
-          </svg>
-        </motion.div>
-      </motion.div>
     </section>
   );
-};
-
-export default ProjectsSection;
+}
