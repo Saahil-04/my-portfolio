@@ -1,5 +1,5 @@
 'use client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiGithub, FiExternalLink, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';

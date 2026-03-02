@@ -1,7 +1,7 @@
 'use client';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ROLES = ['Full Stack Developer', 'Frontend Enthusiast', 'Problem Solver'];
 
