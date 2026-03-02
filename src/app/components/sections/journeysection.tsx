@@ -40,71 +40,6 @@ const typeConfig = {
   },
 };
 
-function MilestoneCard({ milestone, index }: { milestone: Milestone; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  const isLeft = index % 2 === 0;
-  const config = typeConfig[milestone.type];
-
-  return (
-    <div ref={ref} className="relative grid md:grid-cols-[1fr_auto_1fr] gap-0 items-start">
-
-      {/* Left slot */}
-      <div className={`${isLeft ? 'md:pr-10' : 'hidden md:block'}`}>
-        {isLeft && (
-          <motion.div
-            initial={{ opacity: 0, x: -32 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Card milestone={milestone} config={config} align="right" />
-          </motion.div>
-        )}
-      </div>
-
-      {/* Centre dot + line connector */}
-      <div className="flex flex-col items-center gap-0 relative">
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={inView ? { scale: 1, opacity: 1 } : {}}
-          transition={{ duration: 0.35, delay: 0.05, type: 'spring', stiffness: 400, damping: 20 }}
-          style={{
-            width: 16, height: 16, borderRadius: '50%',
-            background: config.dot,
-            boxShadow: `0 0 12px ${config.dot}80`,
-            border: '2px solid rgba(6,11,20,1)',
-            zIndex: 10, marginTop: 24,
-          }}
-        />
-      </div>
-
-      {/* Right slot */}
-      <div className={`${!isLeft ? 'md:pl-10' : 'hidden md:block'}`}>
-        {!isLeft && (
-          <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Card milestone={milestone} config={config} align="left" />
-          </motion.div>
-        )}
-      </div>
-
-      {/* Mobile card (shown below md) */}
-      <div className="col-span-full md:hidden pl-6 mt-2">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <Card milestone={milestone} config={config} align="left" />
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
 function Card({
   milestone,
   config,
@@ -116,23 +51,25 @@ function Card({
 }) {
   return (
     <div
-      className="group p-5 rounded-2xl transition-all duration-300"
+      className="p-5 rounded-2xl transition-all duration-300"
       style={{
         background: 'rgba(255,255,255,0.025)',
         border: '1px solid rgba(255,255,255,0.07)',
         textAlign: align === 'right' ? 'right' : 'left',
       }}
       onMouseEnter={e => {
-        (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.045)';
-        (e.currentTarget as HTMLDivElement).style.borderColor = `${config.badge.border}`;
-        (e.currentTarget as HTMLDivElement).style.boxShadow = `0 12px 40px rgba(0,0,0,0.25)`;
-        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.background = 'rgba(255,255,255,0.045)';
+        el.style.borderColor = config.badge.border;
+        el.style.boxShadow = '0 12px 40px rgba(0,0,0,0.25)';
+        el.style.transform = 'translateY(-3px)';
       }}
       onMouseLeave={e => {
-        (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.025)';
-        (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.07)';
-        (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
-        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.background = 'rgba(255,255,255,0.025)';
+        el.style.borderColor = 'rgba(255,255,255,0.07)';
+        el.style.boxShadow = 'none';
+        el.style.transform = 'translateY(0)';
       }}
     >
       <div className={`flex items-center gap-2 mb-3 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
@@ -147,7 +84,6 @@ function Card({
           {milestone.year}
         </span>
       </div>
-
       <h3 className="text-lg font-bold mb-1 leading-snug" style={{ color: 'rgba(255,255,255,0.9)', letterSpacing: '-0.01em' }}>
         {milestone.title}
       </h3>
@@ -157,6 +93,93 @@ function Card({
       <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
         {milestone.description}
       </p>
+    </div>
+  );
+}
+
+function MilestoneCard({ milestone, index }: { milestone: Milestone; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const isLeft = index % 2 === 0;
+  const config = typeConfig[milestone.type];
+
+  return (
+    <div ref={ref}>
+
+      {/* ── DESKTOP (md+): centre timeline, cards alternate left/right ── */}
+      <div className="hidden md:grid md:grid-cols-[1fr_32px_1fr] items-start">
+
+        {/* Left cell — only renders card when isLeft */}
+        <div className="pr-8">
+          {isLeft && (
+            <motion.div
+              initial={{ opacity: 0, x: -32 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Card milestone={milestone} config={config} align="right" />
+            </motion.div>
+          )}
+        </div>
+
+        {/* Centre dot */}
+        <div className="flex justify-center pt-6">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={inView ? { scale: 1, opacity: 1 } : {}}
+            transition={{ duration: 0.35, delay: 0.05, type: 'spring', stiffness: 400, damping: 20 }}
+            style={{
+              width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+              background: config.dot,
+              boxShadow: `0 0 12px ${config.dot}80`,
+              border: '2px solid #060b14',
+            }}
+          />
+        </div>
+
+        {/* Right cell — only renders card when !isLeft */}
+        <div className="pl-8">
+          {!isLeft && (
+            <motion.div
+              initial={{ opacity: 0, x: 32 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Card milestone={milestone} config={config} align="left" />
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* ── MOBILE (<md): left-rail dot + full-width card ── */}
+      <div className="flex md:hidden items-start gap-4">
+
+        {/* Dot column */}
+        <div className="flex-shrink-0 pt-5">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={inView ? { scale: 1, opacity: 1 } : {}}
+            transition={{ duration: 0.35, type: 'spring', stiffness: 400, damping: 20 }}
+            style={{
+              width: 14, height: 14, borderRadius: '50%',
+              background: config.dot,
+              boxShadow: `0 0 10px ${config.dot}80`,
+              border: '2px solid #060b14',
+            }}
+          />
+        </div>
+
+        {/* Card */}
+        <motion.div
+          className="flex-1 min-w-0"
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Card milestone={milestone} config={config} align="left" />
+        </motion.div>
+      </div>
+
     </div>
   );
 }
@@ -174,7 +197,7 @@ export default function JourneySection() {
         background: 'radial-gradient(circle, rgba(34,211,238,0.05) 0%, transparent 70%)',
         top: '10%', left: '50%', transform: 'translateX(-50%)',
       }} />
-      {/* Grid */}
+      {/* Grid overlay */}
       <div className="pointer-events-none absolute inset-0" style={{
         opacity: 0.025,
         backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
@@ -208,24 +231,18 @@ export default function JourneySection() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line — desktop only */}
-          <div
-            className="hidden md:block absolute top-6 bottom-6 w-px"
-            style={{
-              left: '50%', transform: 'translateX(-50%)',
-              background: 'linear-gradient(to bottom, rgba(34,211,238,0.5), rgba(59,130,246,0.3), transparent)',
-            }}
-          />
-          {/* Vertical line — mobile */}
-          <div
-            className="md:hidden absolute top-6 bottom-6 w-px"
-            style={{
-              left: '7px',
-              background: 'linear-gradient(to bottom, rgba(34,211,238,0.5), rgba(59,130,246,0.3), transparent)',
-            }}
-          />
+          {/* Vertical line — desktop */}
+          <div className="hidden md:block absolute top-6 bottom-6 w-px" style={{
+            left: 'calc(50% - 0.5px)',
+            background: 'linear-gradient(to bottom, rgba(34,211,238,0.5), rgba(59,130,246,0.3), transparent)',
+          }} />
+          {/* Vertical line — mobile: sits behind the 14px dot (7px = half dot width) */}
+          <div className="md:hidden absolute top-6 bottom-6 w-px" style={{
+            left: '7px',
+            background: 'linear-gradient(to bottom, rgba(34,211,238,0.5), rgba(59,130,246,0.3), transparent)',
+          }} />
 
-          <div className="space-y-12">
+          <div className="space-y-10">
             {milestones.map((m, i) => (
               <MilestoneCard key={i} milestone={m} index={i} />
             ))}
